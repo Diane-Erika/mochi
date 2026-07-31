@@ -15,7 +15,7 @@ export function Pet(): JSX.Element {
                     width: config.frameWidth * scale,
                     height: config.frameHeight * scale,
                     backgroundImage: `url(${config.src})`,
-                    backgroundSize: `${config.frameCount * config.frameWidth * scale}px auto`,
+                    backgroundSize: `${config.frameCount * config.frameWidth * scale}px ${config.frameHeight * scale}px`,
                     backgroundPosition: `${-frame * config.frameWidth * scale}px 0px`,
                     imageRendering: 'pixelated',
                 }}

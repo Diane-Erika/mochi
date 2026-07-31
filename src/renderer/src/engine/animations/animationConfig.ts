@@ -10,11 +10,13 @@ export interface AnimationConfig {
 }
 
 export const ANIMATIONS: Record<string, AnimationConfig> = {
+    // Geometry here must match sprites/manifest.json — run `npm run sprites`
+    // after changing a cell size there.
     idle: {
         src: idleSheet,
         frameCount: 4,
-        frameWidth: 60,
-        frameHeight: 60,
+        frameWidth: 64,
+        frameHeight: 64,
         fps: 4,
         loop: true,
     },

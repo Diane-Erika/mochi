@@ -1,0 +1,12 @@
+{
+  "outDir": "src/renderer/src/assets/sprites",
+  "cellWidth": 64,
+  "cellHeight": 64,
+  "animations": {
+    "mochi_idle": {
+      "src": "raw/mochi_idle.png",
+      "frameCount": 4,
+      "anchor": "ground"
+    }
+  }
+}
