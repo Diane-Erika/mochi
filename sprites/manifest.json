@@ -7,6 +7,11 @@
       "src": "raw/mochi_idle.png",
       "frameCount": 4,
       "anchor": "ground"
+    },
+    "mochi_walk": {
+      "src": "raw/mochi_walk.png",
+      "frameCount": 3,
+      "anchor": "ground"
     }
   }
 }

@@ -2,16 +2,19 @@ import { app, shell, BrowserWindow, ipcMain, screen } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
+import { PET_SIZE } from '../shared/petSize'
 
 function createWindow(): void {
     const { width, height } = screen.getPrimaryDisplay().workAreaSize
 
     // Create the browser window.
     const mainWindow = new BrowserWindow({
-        width: 500,
-        height: 500,
-        x: width - 100, // spawn near bottom-right, tweak later
-        y: height - 100,
+        // Match the sprite exactly: the window rect is the pet's hitbox, and
+        // the edge clamp below measures the dog instead of empty space.
+        width: PET_SIZE,
+        height: PET_SIZE,
+        x: Math.round(width / 2),
+        y: height - PET_SIZE,
         transparent: true,
         frame: false,
         alwaysOnTop: true,
@@ -61,6 +64,18 @@ app.whenReady().then(() => {
 
     // IPC test
     ipcMain.on('ping', () => console.log('pong'))
+
+    ipcMain.handle('pet:move-by', (e, dx: number) => {
+        const win = BrowserWindow.fromWebContents(e.sender)!
+        const [x, y] = win.getPosition()
+        const { workArea } = screen.getPrimaryDisplay()
+        const maxX = workArea.x + workArea.width - PET_SIZE
+        const next = Math.min(maxX, Math.max(workArea.x, x + dx))
+
+        win.setBounds({ x: Math.round(next), y, width: PET_SIZE, height: PET_SIZE })
+
+        return { x: next, atLeft: next <= workArea.x, atRight: next >= maxX }
+    })
 
     createWindow()
 
