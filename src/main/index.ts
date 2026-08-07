@@ -3,18 +3,19 @@ import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { PET_SIZE } from '../shared/petSize'
+import { PetPosition } from '../shared/petPosition'
 
 function createWindow(): void {
-    const { width, height } = screen.getPrimaryDisplay().workAreaSize
+    const { workArea } = screen.getPrimaryDisplay()
 
     // Create the browser window.
     const mainWindow = new BrowserWindow({
-        // Match the sprite exactly: the window rect is the pet's hitbox, and
-        // the edge clamp below measures the dog instead of empty space.
         width: PET_SIZE,
         height: PET_SIZE,
-        x: Math.round(width / 2),
-        y: height - PET_SIZE,
+        x: Math.round(workArea.x + workArea.width / 2),
+        // Spawn on the ground. Must agree with `groundY` in pet:move-by, or the
+        // pet reports a non-zero altitude before it has ever flown.
+        y: workArea.y + workArea.height - PET_SIZE,
         transparent: true,
         frame: false,
         alwaysOnTop: true,
@@ -39,8 +40,6 @@ function createWindow(): void {
         return { action: 'deny' }
     })
 
-    // HMR for renderer base on electron-vite cli.
-    // Load the remote URL for development or the local html file for production.
     if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
         mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
     } else {
@@ -48,16 +47,9 @@ function createWindow(): void {
     }
 }
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
     // Set app user model id for windows
     electronApp.setAppUserModelId('com.electron')
-
-    // Default open or close DevTools by F12 in development
-    // and ignore CommandOrControl + R in production.
-    // see https://github.com/alex8088/electron-toolkit/tree/master/packages/utils
     app.on('browser-window-created', (_, window) => {
         optimizer.watchWindowShortcuts(window)
     })
@@ -65,30 +57,38 @@ app.whenReady().then(() => {
     // IPC test
     ipcMain.on('ping', () => console.log('pong'))
 
-    ipcMain.handle('pet:move-by', (e, dx: number) => {
+    ipcMain.handle('pet:move-by', (e, dx: number, dy: number): PetPosition => {
         const win = BrowserWindow.fromWebContents(e.sender)!
         const [x, y] = win.getPosition()
         const { workArea } = screen.getPrimaryDisplay()
         const maxX = workArea.x + workArea.width - PET_SIZE
-        const next = Math.min(maxX, Math.max(workArea.x, x + dx))
+        const groundY = workArea.y + workArea.height - PET_SIZE
+        const nextX = Math.round(Math.min(maxX, Math.max(workArea.x, x + dx)))
+        const nextY = Math.round(Math.min(groundY, Math.max(workArea.y, y + dy)))
 
-        win.setBounds({ x: Math.round(next), y, width: PET_SIZE, height: PET_SIZE })
+        win.setBounds({ x: nextX, y: nextY, width: PET_SIZE, height: PET_SIZE })
 
-        return { x: next, atLeft: next <= workArea.x, atRight: next >= maxX }
+        return {
+            x: nextX,
+            y: nextY,
+            // Altitude counts up from the floor, so the renderer can reason
+            // about height without knowing where the work area begins.
+            altitude: groundY - nextY,
+            maxAltitude: groundY - workArea.y,
+            atLeft: nextX <= workArea.x,
+            atRight: nextX >= maxX,
+            atGround: nextY >= groundY,
+            atCeiling: nextY <= workArea.y,
+        }
     })
 
     createWindow()
 
     app.on('activate', function () {
-        // On macOS it's common to re-create a window in the app when the
-        // dock icon is clicked and there are no other windows open.
         if (BrowserWindow.getAllWindows().length === 0) createWindow()
     })
 })
 
-// Quit when all windows are closed, except on macOS. There, it's common
-// for applications and their menu bar to stay active until the user quits
-// explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
         app.quit()

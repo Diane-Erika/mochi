@@ -1,10 +1,11 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
+import { PetPosition } from '../shared/petPosition'
 
 // Custom APIs for renderer
 const api = {
-    moveBy: (dx: number): Promise<{ x: number; atLeft: boolean; atRight: boolean }> =>
-        ipcRenderer.invoke('pet:move-by', dx),
+    moveBy: (dx: number, dy: number): Promise<PetPosition> =>
+        ipcRenderer.invoke('pet:move-by', dx, dy),
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to
