@@ -7,6 +7,9 @@ const api = {
         ipcRenderer.invoke('pet:move-by', dx),
     moveByY: (dy: number): Promise<{ y: number; atTop: boolean; atBottom: boolean }> =>
         ipcRenderer.invoke('pet:move-by-y', dy),
+    getCursorPoint: (): Promise<{ x: number; y: number }> =>
+        ipcRenderer.invoke('pet:get-cursor-point'),
+    getPosition: (): Promise<{ x: number; y: number }> => ipcRenderer.invoke('pet:get-position'),
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

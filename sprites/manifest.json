@@ -17,6 +17,11 @@
       "src": "raw/mochi_fly.png",
       "frameCount": 4,
       "anchor": "ground"
+    },
+    "mochi_alert": {
+      "src": "raw/mochi_alert.png",
+      "frameCount": 1,
+      "anchor": "ground"
     }
   }
 }

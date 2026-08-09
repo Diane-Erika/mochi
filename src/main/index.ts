@@ -89,6 +89,14 @@ app.whenReady().then(() => {
         return { y: next, atTop: next <= workArea.y, atBottom: next >= maxY }
     })
 
+    ipcMain.handle('pet:get-cursor-point', () => screen.getCursorScreenPoint())
+
+    ipcMain.handle('pet:get-position', (e) => {
+        const win = BrowserWindow.fromWebContents(e.sender)!
+        const [x, y] = win.getPosition()
+        return { x, y }
+    })
+
     createWindow()
 
     app.on('activate', function () {

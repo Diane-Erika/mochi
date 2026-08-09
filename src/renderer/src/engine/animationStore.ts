@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import { create } from 'zustand'
 
-export type AnimationName = 'idle' | 'walk' | 'fly'
+export type AnimationName = 'idle' | 'walk' | 'fly' | 'follow' | 'alert'
 
 export interface AnimationState {
     current: AnimationName
