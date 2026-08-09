@@ -1,5 +1,6 @@
 import idleSheet from '@renderer/assets/sprites/mochi_idle.png'
 import walkSheet from '@renderer/assets/sprites/mochi_walk.png'
+import flySheet from '@renderer/assets/sprites/mochi_fly.png'
 
 export interface AnimationConfig {
     src: string
@@ -31,8 +32,8 @@ export const ANIMATIONS: Record<string, AnimationConfig> = {
     },
     // Placeholder: reuses walk's sheet until real fly art exists.
     fly: {
-        src: walkSheet,
-        frameCount: 3,
+        src: flySheet,
+        frameCount: 4,
         frameWidth: 64,
         frameHeight: 64,
         fps: 4,

@@ -12,6 +12,11 @@
       "src": "raw/mochi_walk.png",
       "frameCount": 3,
       "anchor": "ground"
+    },
+    "mochi_fly": {
+      "src": "raw/mochi_fly.png",
+      "frameCount": 4,
+      "anchor": "ground"
     }
   }
 }
