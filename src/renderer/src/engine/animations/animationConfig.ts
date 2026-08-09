@@ -29,4 +29,13 @@ export const ANIMATIONS: Record<string, AnimationConfig> = {
         fps: 4,
         loop: true,
     },
+    // Placeholder: reuses walk's sheet until real fly art exists.
+    fly: {
+        src: walkSheet,
+        frameCount: 3,
+        frameWidth: 64,
+        frameHeight: 64,
+        fps: 4,
+        loop: true,
+    },
 }

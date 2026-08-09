@@ -77,6 +77,18 @@ app.whenReady().then(() => {
         return { x: next, atLeft: next <= workArea.x, atRight: next >= maxX }
     })
 
+    ipcMain.handle('pet:move-by-y', (e, dy: number) => {
+        const win = BrowserWindow.fromWebContents(e.sender)!
+        const [x, y] = win.getPosition()
+        const { workArea } = screen.getPrimaryDisplay()
+        const maxY = workArea.y + workArea.height - PET_SIZE
+        const next = Math.min(maxY, Math.max(workArea.y, y + dy))
+
+        win.setBounds({ x, y: Math.round(next), width: PET_SIZE, height: PET_SIZE })
+
+        return { y: next, atTop: next <= workArea.y, atBottom: next >= maxY }
+    })
+
     createWindow()
 
     app.on('activate', function () {

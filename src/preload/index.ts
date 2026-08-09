@@ -5,6 +5,8 @@ import { electronAPI } from '@electron-toolkit/preload'
 const api = {
     moveBy: (dx: number): Promise<{ x: number; atLeft: boolean; atRight: boolean }> =>
         ipcRenderer.invoke('pet:move-by', dx),
+    moveByY: (dy: number): Promise<{ y: number; atTop: boolean; atBottom: boolean }> =>
+        ipcRenderer.invoke('pet:move-by-y', dy),
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

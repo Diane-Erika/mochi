@@ -1,6 +1,6 @@
 import { AnimationName, useAnimationStore } from './animationStore'
 
-const ANIM_POOL: AnimationName[] = ['idle', 'walk']
+const ANIM_POOL: AnimationName[] = ['idle', 'walk', 'fly']
 
 function pickRandom<T>(pool: T[]): T {
     return pool[Math.floor(Math.random() * pool.length)]
