@@ -6,6 +6,11 @@ function pickRandom<T>(pool: T[]): T {
     return pool[Math.floor(Math.random() * pool.length)]
 }
 
+/** One of the ambient animations, for callers that need to hand control back to the idle loop. */
+export function pickAmbientAnimation(): AnimationName {
+    return pickRandom(ANIM_POOL)
+}
+
 export function startAnimationController(): () => void {
     const { play } = useAnimationStore.getState()
 
